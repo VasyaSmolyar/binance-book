@@ -14,10 +14,12 @@ function binance({ endpoint, apiKey, secretKey, onMessage }) {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
-                ws = new WebSocket(`wss://stream.binance.com:9443/ws/${ticker.toLowerCase()}@depth`);
+                ws = new WebSocket(`wss://stream.binance.com:9443/ws/${ticker.toLowerCase()}@depth20`);
 
                 ws.onopen = () => {
-                    ws.onmessage = onMessage;
+                    ws.onmessage = (mes) => {
+                        onMessage(JSON.parse(mes.data));
+                    };
                 }
 
                 callback(json);

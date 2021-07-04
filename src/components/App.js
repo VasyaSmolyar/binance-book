@@ -1,18 +1,24 @@
 import React, { Suspense } from "react";
 
-import '../styles/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Core } from './core/core.js';
 
+import { Container, Navbar } from "react-bootstrap";
+
 const Book = React.lazy(() => import('./pages/Book'));
+const List = React.lazy(() => import('./pages/List'));
 
 function App() {
     return (
         <Core>
             <Suspense fallback={<div>Loading...</div>}>
-                <div>
-                    <h1>Your React App!</h1>
+                <Container fluid>
+                    <Navbar>
+
+                    </Navbar>
+                    <List />
                     <Book />
-                </div>
+                </Container>
             </Suspense>
         </Core>
     );
