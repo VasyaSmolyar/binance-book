@@ -1,4 +1,7 @@
-function binance({ endpoint, apiKey, secretKey }) {
+let ws = null;
+
+function binance({ endpoint, apiKey, secretKey, onMessage }) {
+
     return {
         pluginName: 'binance',
         getBook: function(ticker, callback) {
@@ -11,6 +14,12 @@ function binance({ endpoint, apiKey, secretKey }) {
             }).then((response) => {
                 return response.json();
             }).then((json) => {
+                ws = new WebSocket(`wss://stream.binance.com:9443/ws/${ticker.toLowerCase()}@depth`);
+
+                ws.onopen = () => {
+                    ws.onmessage = onMessage;
+                }
+
                 callback(json);
             });
         }
