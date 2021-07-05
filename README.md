@@ -1,6 +1,6 @@
-# Simple React Webpack boilerplate
+# Стакан ордеров Binance
 
-A ready to use simple boilerplate for React Apps.
+Перед загрузкой страницы необходимо отключить проверку CORS.
 
 ## Instructions
 
