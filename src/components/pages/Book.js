@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CoreContext } from '../core/core';
-import { FormText, Table } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
+
+import { useLocation } from "react-router-dom";
 
 function Book() {
     const context = useContext(CoreContext);
 
     const [ orders, setOrders ] = useState([]);
-
-    if(context.binance === undefined && orders === []) {
-        return <div>loading plugin</div>
-    }
+    let location = useLocation();
 
     const bidsData = orders.map(({ bid, ask }) => {
         return (
@@ -25,12 +24,19 @@ function Book() {
     })
 
     useEffect(() => {
-        console.log(context);
+        
+        if(context.binance === undefined) {
+            console.log("BIN IS NOT LOADED");
+            console.log(context);
+            return;
+        }
+
         context.binance.getBook('LTCUSDT', (json) => {
             console.log(json);
         });
         context.bus.subscribe('book', (data) => {
             console.log(data);
+            console.log(context);
             const info = data.bids.map((bid, i) => {
                 return {
                     bid: bid,
@@ -39,7 +45,12 @@ function Book() {
             })
             setOrders(info);
         });
-    }, []);
+        
+        return () => {
+            context.bus.unsubscribe('book');
+        }
+        
+    }, [location]);
 
     return (
         <Table striped bordered hover>

@@ -13,14 +13,18 @@ export function Core ({ children }) {
         }
     }); // Данные о загруженных плагинах
     
-    const setData = (channel, data ) => {
+    const setData = (data ) => {
         // Глобальный механизм передачи для шины данных
-        let newState = Object.assign({}, state);
-        newState.data[channel] = data;
-        setState(data);
+        setState(( prevState ) => {
+            return {
+                ...prevState,
+                data: data
+            }
+        });
     }
 
     useEffect(() => {
+        
         let map = {
             data: {
 
@@ -29,7 +33,7 @@ export function Core ({ children }) {
 
         map.bus = bus({
             setData: setData,
-            data: state.data
+            getData: () => { return state.data }
         }); // Загрузка плагина шины данных
 
         map.binance = binance({
@@ -37,7 +41,7 @@ export function Core ({ children }) {
             'api_key': api_key,
             'secret_key': secret_key,
             'onMessage': (mes) => {
-                map.bus.publish('book', mes); // Посыл данны на шину
+                map.bus.publish('book', mes); // Посыл данных на шину
            }
         }); // Загрузка плагина SDK
 
@@ -49,10 +53,4 @@ export function Core ({ children }) {
             {children}
         </CoreContext.Provider>
     );
-}
-
-export const pluginLoaders = [ { 'name' : 'binance', 'loader' : binance } ];
-
-export const pluginState = {
-    
 }
