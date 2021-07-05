@@ -8,6 +8,8 @@ function Book() {
     const context = useContext(CoreContext);
 
     const [ orders, setOrders ] = useState([]);
+    const [ title, setTitle ] = useState("");
+ 
     let location = useLocation();
 
     const bidsData = orders.map(({ bid, ask }) => {
@@ -31,12 +33,14 @@ function Book() {
             return;
         }
 
-        context.binance.getBook('LTCUSDT', (json) => {
+        const symbol = context.bus.read("symbol");
+        setTitle(symbol);
+
+        context.binance.getBook(symbol, (json) => {
             console.log(json);
         });
+
         context.bus.subscribe('book', (data) => {
-            console.log(data);
-            console.log(context);
             const info = data.bids.map((bid, i) => {
                 return {
                     bid: bid,
@@ -53,19 +57,22 @@ function Book() {
     }, [location]);
 
     return (
-        <Table striped bordered hover>
-            <thead>
-                <tr>
-                    <th>Amount</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                    <th>Amount</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                </tr>
-                {bidsData}
-            </thead>
-        </Table>       
+        <div>
+            <h1>{title}</h1>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                    {bidsData}
+                </thead>
+            </Table> 
+        </div>      
     )
 }
 

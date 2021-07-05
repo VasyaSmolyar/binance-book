@@ -27,9 +27,21 @@ function bus({ getData, setData }) {
         }); // Инициализация канала
     }
 
+    function read(sym) {
+        return getData()[sym].data;
+    }
+
+    function write(sym, data) {
+        update(sym, {
+            data: data
+        });
+    }
+
     return {
         'publish': publish,
         'subscribe': subscribe,
+        'read': read,
+        'write': write,
         'unsubscribe': unsubscribe
     }
 }

@@ -36,6 +36,8 @@ export function Core ({ children }) {
             getData: () => { return state.data }
         }); // Загрузка плагина шины данных
 
+        map.bus.write("symbol", "BTCUSDT");
+
         map.binance = binance({
             'endpoint': endpoint,
             'api_key': api_key,
