@@ -3,16 +3,30 @@ import { CoreContext } from '../core/core';
 import { Table } from 'react-bootstrap';
 
 import { useLocation } from "react-router-dom";
+import './Book.css';
+
+import { BrowserView, MobileView, isMobile } from 'react-device-detect';
 
 function Book() {
     const context = useContext(CoreContext);
 
     const [ orders, setOrders ] = useState([]);
     const [ title, setTitle ] = useState("");
- 
+
     let location = useLocation();
 
     const bidsData = orders.map(({ bid, ask }) => {
+        if(isMobile) {
+            return (
+                <tr>
+                    <td>{bid[1]}</td>
+                    <td>{bid[0]}</td>
+                    <td>{ask[1]}</td>
+                    <td>{ask[0]}</td>
+                </tr>
+            )    
+        }
+
         return (
             <tr>
                 <td>{bid[1]}</td>
@@ -56,22 +70,46 @@ function Book() {
         
     }, [location]);
 
+
     return (
         <div>
             <h1>{title}</h1>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Amount</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Amount</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                    </tr>
-                    {bidsData}
-                </thead>
-            </Table> 
+            <BrowserView>
+                <div className="table-responsive" >
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                                <th>Amount</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {bidsData}
+                        </tbody>
+                    </Table> 
+                </div>
+            </BrowserView>
+            <MobileView>
+            <div className="table-responsive" >
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Price</th>
+                            <th>Amount</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bidsData}
+                    </tbody>
+                </Table> 
+                </div>
+            </MobileView>
         </div>      
     )
 }
